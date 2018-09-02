@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Edit Project</title>
+<link rel="stylesheet" href="../layout.css">
+</head>
+<body>
+
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+	
+	<h2 style="color: white">
+		Edit <label th:text="${project.name}"></label>
+	</h2>
+
+	<div class="content">
+		<div class="row">
+			<div class="column" align="left">
+				<form action="/updateProject" method="POST">
+					<table>
+						<tr>
+							<td>Project Name</td>
+							<td><input type="text" id="name" name="name" th:field="${project.name}" /></td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td><textarea rows="4" cols="50" id="description" name="description" th:field="${project.description}"></textarea></td>
+						</tr>
+					</table>
+					<input type="hidden" id="id" name="id" th:field="${project.id}" /><input type="submit" value="Update Project" />
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

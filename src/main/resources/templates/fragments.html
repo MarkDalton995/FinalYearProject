@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:fragment="head">
+		<link rel="stylesheet" href="layout.css">
+	</head>
+	
+	
+		
+	
+	<ul th:fragment="EmployeeNavBar">
+		<li><img style="padding-top: 4px; padding-left: 4px; padding-right: 4px;" src="images/logo2.png"></img></li>
+  		<li><a href="/home">Home</a></li>
+  		<li><a href="/myTasks">My Tasks</a></li>
+  		<li><a href="/viewAllProjects">All Projects</a></li>
+  		<li><a href="/tracker">Tracker</a></li>
+  		<li><a href="/security">Security</a></li>
+  		<li style="float:right"><a class="active" href="/logout">Logout</a></li>
+  		<li style="float:right"><a th:text="${session.employee.email}"></a></li>
+	</ul>
+	<ul th:fragment="ManagerNavBar">
+		<li><img style="padding-top: 4px; padding-left: 4px; padding-right: 4px;" src="images/logo2.png"></img></li>
+		<li><a href="/home">Home</a></li>
+		<li><a href="/myTasks">My Tasks</a></li>
+		<li><a href="/viewAllProjects">All Projects</a></li>
+		<li><a href="/tracker">Tracker</a></li>
+		<li><a href="/createProject">Create Project</a></li>
+		<li><a href="/settings">Settings</a></li>
+		<li><a href="/security">Security</a></li>
+  		<li style="float:right"><a class="active" href="/logout">Logout</a></li>
+  		<li style="float:right"><a th:text="${session.employee.email}"></a></li>
+	</ul>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>Create Project</title>
+</head>
+<body>
+
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+	
+	<h2 style="color: white">
+		Create Project
+	</h2>
+
+	<div class="content">
+	
+		<div class="row">
+		
+			<div class="column" align="left">
+			
+				<form action="/createTheProject" method="POST">
+					<div>
+						<label>Project Name</label>
+						<div>
+							<input type="text" id="name" name="name" />
+						</div>
+					</div>
+					<div>
+						<label>Description</label>
+						<div>
+							<textarea rows="4" cols="50" id="description" name="description"></textarea>
+						</div>
+					</div>
+					<div>
+						<label>Start Date</label>
+						<div>
+							<input type="date" id="startDate" name="startDate" />
+						</div>
+					</div>
+					<div>
+						<div>
+							<label>Project Manager</label>
+						</div>
+						<select name="projectManager" id="projectManager">
+							<th:block th:each="manager : ${managers}">
+								<option th:value="${manager.email}" th:text="${manager.email}">...</option>
+							</th:block>
+						</select>
+					</div>
+					<div>
+						<input type="submit" value="Create Project" />
+					</div>
+				</form>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+
+</body>
+</html>

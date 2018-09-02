@@ -1,0 +1,100 @@
+@charset "ISO-8859-1";
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #2d3239;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+a:hover:not(.active) {
+    background-color: #121110;
+}
+
+.active {
+    background-color: #58a367;
+}
+
+div {
+    padding-top: 2px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 0px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+    padding: 10px;
+}
+
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #555;  
+}
+
+body {
+    background-image:url(images/background3.jpg);
+    background-size: cover;
+    font-family: arial, sans-serif;
+}
+
+.content {
+    max-width: 90%;
+    margin: auto;
+    background: white;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+#links {
+	background-color: #58a367;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 6px;
+}
+
+input[type=password], input[type=text], input[type=email] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 6px;
+}
+
+textarea {
+	padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 6px;
+    resize: none;
+}

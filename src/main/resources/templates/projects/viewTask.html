@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>View Task</title>
+<link rel="stylesheet" href="../layout.css">
+<style>
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+	
+	<h2 style="color: white" th:text="${task.name}"></h2>
+	
+	<div class="content">
+	
+		<div class="row">
+		
+			<div class="column" align="left">
+				<table>
+					<tr>
+						<td>Name:</td>
+						<td th:text="${task.name}"></td>
+					</tr>
+					<tr>
+						<td>Description:</td>
+						<td th:text="${task.description}"></td>
+					</tr>
+					<tr>
+						<td>Duration:</td>
+						<td><label th:text="${task.duration}"></label> Days</td>
+					</tr>
+					<tr>
+						<td>Start Date:</td>
+						<td th:text="${task.minStartDate}"></td>
+					</tr>
+					<tr th:if="${task.skillRequired != null}">
+						<td>Role Required:</td>
+						<td th:text="${task.skillRequired.name}"></td>
+					</tr>
+					<tr th:if="${task.skillRequired == null}">
+						<td>Role Required:</td>
+						<td>
+							<form action="/setSkillRequired" method="POST">
+								<select name="skill" id="skill">
+									<th:block th:each="skill : ${skills}">
+										<option th:value="${skill.name}" th:text="${skill.name}">...</option>
+									</th:block>
+								</select><input type="hidden" th:field="${task.id}" id="id" name="id" /> <input value="Set Skill" type="submit">
+							</form>
+						</td>
+					</tr>
+					<tr th:if="${task.employee != null}">
+						<td>Employee Assigned:</td>
+						<td th:text="${task.employee.name}"></td>
+					</tr>
+					<tr th:if="${task.employee != null}">
+						<td>Employee Email:</td>
+						<td th:text="${task.employee.email}"></td>
+					</tr>
+				</table>
+			
+				<h4>Task Dependency</h4>
+				<div th:if="${task.dependency != null}">
+					<font style="color: red;"><label th:text="${task.dependency.name}"></label></font>
+				</div>
+				<div th:if="${task.dependency == null}">There is no dependency
+					set</div>
+			
+				<div th:if="${not task.completed}">
+					<div th:if="${session.employee.manager}">
+						<div th:if="${task.dependency == null}">
+							<div th:if="${#lists.isEmpty(dependencies)}">
+								<label>There are no other tasks to set as a dependency.....</label>
+							</div>
+							<div th:if="${not #lists.isEmpty(dependencies)}">
+								<form action="/setDependency" method="POST">
+									<select name="dependency" id="dependency">
+										<th:block th:each="dependency : ${dependencies}">
+											<option th:value="${dependency.id}" th:text="${dependency.name}">...</option>
+										</th:block>
+									</select> <br>
+									<br> <input type="hidden" th:field="${task.id}" id="id"
+										name="id" /> <input value="Set Dependency" type="submit">
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div th:if="${not task.completed}">
+					<div th:if="${task.employee != null}">
+						<div th:if="${session.employee.id == task.employee.id}">
+							<form action="/setComplete" method="POST">
+								<input type="hidden" th:field="${task.id}" id="id" name="id" /> <input
+									value="Mark Complete" type="submit">
+								<p>
+									<font color="red">This cannot be done if there is a
+										dependency that is not yet complete!</font>
+								</p>
+							</form>
+						</div>
+					</div>
+				</div>
+			
+				<div th:if=${task.completed}>
+					<h4>Task Marked Complete</h4>
+				</div>
+			
+			</div>
+			
+			
+			
+			
+			
+			<div class="column" align="left">
+			
+				<div th:if="${not task.completed}">
+					<div data-th-if="${session.employee.manager}">
+						<div th:if="${task.dependency == null}">
+							<h4>Update Task</h4>
+							<form action="/updateTask" th:object="${task}" method="POST">
+								Name
+								<div>
+									<input type="text" th:field="${task.name}" id="name" name="name" />
+								</div>
+								Description
+								<div>
+									<textarea rows="4" cols="50" th:field="${task.description}" id="description"
+										name="description"></textarea>
+								</div>
+								<div>
+									<input type="hidden" th:field="${task.id}" id="id" name="id" />
+								</div>
+								<button type="submit" value="Update">Update</button>
+							</form>
+						</div>
+			
+						<div th:if="${task.dependency != null}">
+							<h4>Update Task</h4>
+							<form action="/updateTaskNoDep" th:object="${task}" method="POST">
+								<div>
+									<input th:field="${task.name}" id="name" name="name" />
+								</div>
+								<div>
+									<input th:field="${task.description}" id="description"
+										name="description" />
+								</div>
+								<div>
+									<input type="hidden" th:field="${task.id}" id="id" name="id" />
+								</div>
+								<button type="submit" value="Update">Update</button>
+							</form>
+						</div>
+			
+						<h4>Delete Task</h4>
+						<form action="/deleteTask" method="POST">
+							<input type="hidden" th:field="${task.id}" id="id" name="id" /> <input
+								value="Delete" type="submit">
+						</form>
+			
+			
+						<div th:if="${task.skillRequired != null}">
+							<h4>
+								<label>Assign New Employee</label>
+							</h4>
+							<form action="/assignEmployeeTask" method="POST"
+								th:if="${not #lists.isEmpty(employeeSkills)}">
+								<div>
+									<select name="employeeSkill" id="employeeSkill">
+										<th:block th:each="employeeSkill : ${employeeSkills}">
+											<option th:value="${employeeSkill.email}"
+												th:text="${employeeSkill.email}">...</option>
+										</th:block>
+									</select>
+								</div>
+								<input type="hidden" th:field="${task.id}" id="id" name="id" /> <input
+									value="Assign" type="submit">
+							</form>
+							<div th:if="${#lists.isEmpty(employeeSkills)}">
+								<label>No Employee with correct skill to be
+									assigned........</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+</body>
+</html>

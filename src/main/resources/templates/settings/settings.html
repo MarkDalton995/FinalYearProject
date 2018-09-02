@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>Settings</title>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">Settings</h2>
+
+	<div class="content">
+		<div class="row">
+			<a id="links" href="/usersSettings">Users Settings</a> <a id="links"
+				href="/skillsSettings">Roles Settings</a>
+		</div>
+		<div>
+
+			<h4 th:if="${daysSet == true}">
+				Current days per month: <label th:text="${daysMonth.value}"></label>
+			</h4>
+			<h4>Set the days per month</h4>
+			<form action="/getDays" method="POST">
+				<select name="days" id="days">
+					<option value="20">20 Days</option>
+					<option value="22">22 Days</option>
+					<option value="24">24 Days</option>
+					<option value="26">26 Days</option>
+					<option value="28">28 Days</option>
+					<option value="30">30 Days</option>
+				</select> <br> <br> <input type="submit" value="Update">
+			</form>
+		</div>
+		<div th:if="${daysSet == false}">Current days per month has not
+			been set.</div>
+	</div>
+</body>
+</html>

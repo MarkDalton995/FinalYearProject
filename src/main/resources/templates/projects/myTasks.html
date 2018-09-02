@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>My Tasks</title>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">My Tasks</h2>
+
+	<div class="content">
+		<th:block th:each="task : ${tasks}">
+			<h4>
+				<label th:text="${task.name}"></label>, <label
+					th:text="${task.duration}"></label> Days
+			</h4>
+			<div style="border-bottom: 1px solid red;">
+				<div class="row">
+					<div class="column" align="left">
+						<a id="links" th:href="@{'/viewTask/{id}'(id=${task.id})}">View Task</a>
+						<a id="links" th:href="@{'/viewProject/{id}'(id=${task.project.id})}">View
+							Project</a>
+					</div>
+					<div class="column" align="right">
+						<font style="color: green;" th:if="${task.completed}">
+							<label th:text="${task.name}"></label> complete
+						</font>
+					</div>
+				</div>
+			</div>
+		</th:block>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>Users Settings</title>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">Employee Settings</h2>
+
+	<div class="content">
+
+		<div class="row">
+
+			<div class="column">
+
+				<h4>Selected Employee: <label th:text="${Employee.name}"></label></h4>
+				<form action="/usersSettingsSelection" method="POST">
+					<select name="employee" id="employee">
+						<th:block th:each="employee : ${employees}">
+							<option th:value="${employee.email}" th:text="${employee.email}">...</option>
+						</th:block>
+					</select> <br> <br> <input value="Select" type="submit">
+				</form>
+
+				<div th:if="${Employee.skill == null}">
+					<h3>Assign Skill</h3>
+					<form action="/assignEmployeeSkill" method="POST">
+						<select name="skill" id="skill">
+							<th:block th:each="skill : ${skills}">
+								<option th:value="${skill.name}" th:text="${skill.name}">...</option>
+							</th:block>
+						</select> <br> <br> <input type="hidden"
+							th:field="${Employee.id}" id="id" name="id"> <input
+							value="Add Skill" type="submit">
+					</form>
+				</div>
+
+				<div th:if="${Employee.skill != null}">
+					<h4>Employee Skill</h4>
+					<label th:text="${Employee.skill.name}"></label>
+				</div>
+
+				<div th:if="${not Employee.manager}">
+					<h4>Set <label th:text="${Employee.name}"></label> as a manager</h4>
+					<form action="/setManager" method="POST">
+						<input type="hidden" th:field="${Employee.id}" id="id" name="id" />
+						<button type="submit" value="Set">Set</button>
+					</form>
+				</div>
+				
+				<div th:if="${session.employee.id != Employee.id}">
+					<div th:if="${Employee.manager}">
+						<h4>Set <label th:text="${Employee.name}"></label> as a standard employee</h4>
+						<form action="/setStandardEmp" method="POST">
+							<input type="hidden" th:field="${Employee.id}" id="id" name="id" />
+							<button type="submit" value="Set">Set</button>
+						</form>
+					</div>
+				</div>
+
+				<div th:if="${session.employee.id != Employee.id}">
+					<h4>Delete <label th:text="${Employee.name}"></label></h4>
+					<form action="/deleteEmployee" method="POST">
+						<input type="hidden" th:field="${Employee.id}" id="deleteID"
+							name="deleteID" /> <input value="Delete" type="submit">
+					</form>
+				</div>
+
+			</div>
+
+			<div class="column">
+				<h4>
+					Update: <label th:text="${Employee.name}"></label>
+				</h4>
+				<form action="/updateEmployee" th:object="${Employee}" method="POST">
+					<table>
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" th:field="${Employee.name}" id="name" name="name" /></td>
+						</tr>
+						<tr>
+							<td>Email:</td>
+							<td><input type="email" th:field="${Employee.email}" id="email" name="email" /></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input type="hidden" th:field="${Employee.password}" id="password" name="password" /></td>
+						</tr>
+					</table>
+					<input type="hidden" th:field="${Employee.id}" id="id" name="id" /> <button type="submit" value="Update">Update</button>
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+</body>
+</html>

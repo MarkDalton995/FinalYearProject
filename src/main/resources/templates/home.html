@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Home</title>
+<link rel="stylesheet" href="layout.css">
+<script th:inline="javascript">
+		window.onload = function() {
+			
+			/*<![CDATA[*/
+		    	var message = /*[[${session.employee.name}]]*/ 'default';
+				var name = /*[[${chartPoints}]]*/;
+			/*]]>*/
+			
+			var chart = new CanvasJS.Chart("chartContainer", {
+				theme: "light2", // "light1", "light2", "dark1", "dark2"
+				animationEnabled: true,
+				title: {
+					text: "Your Allocation This Month"
+				},
+				data: [{
+					type: "column",
+					toolTipContent: "<b>{label}</b>: {y} Days",
+					showInLegend: "true",
+					legendText: "Tasks",
+					indexLabelFontSize: 15,
+					indexLabel: "{y} Days",
+					dataPoints: name
+				}]
+			});
+			chart.render();
+		}
+</script>
+</head>
+<body style="background-image: images\background.jpg">
+
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">
+		Welcome <label th:text="${session.employee.name}"></label>
+	</h2>
+
+	<div class="content">
+
+		<div class="row">
+
+			<div class="column" align="center" id="rcorners2">
+
+				<div id="chartContainer" style="height: 300px; width: 80%;"></div>
+				<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+			</div>
+
+			<div class="column" align="center">
+				<h4>My Current Tasks</h4>
+				<div th:if="${#lists.size(employeeTasks) != 0}">
+				<th:block th:each="empTask : ${employeeTasks}">
+					<div id="rcorners2" style="background: #58a367; padding-left: 10px; max-width: 30%; height: 30px; color: white;" 
+					th:text="${empTask.name}" th:onclick="'window.location.href = \'' + @{'/viewTask/{id}'(id=${empTask.id})} + '\''"></div>
+					<div style="padding-top: 20px;"></div>
+				</th:block>
+				</div>
+			</div>
+			
+		</div>
+
+		<div class="row">
+			<div class="column" align="center">
+				<div th:if="${session.employee.manager}">
+					<div class="column" align="center">
+						<h3>Allocation Alerts</h3>
+						<div th:if="${#lists.size(overAllocated) != 0}">
+							<th:block th:each="emp : ${overAllocated}">
+								<div style="max-width: 40%;"><font color="red" th:text="${emp.email}">Is over
+									Allocated!</font></div>
+							</th:block>
+						</div>
+					</div>
+					
+					<div class="column" align="center">
+						<h3>Overlapping Alerts</h3>
+						<div th:if="${#lists.size(overLappingTasks) != 0}">
+							<th:block th:each="employ : ${overLappingTasks}">
+								<div style="max-width: 40%;"><font color="red" th:text="${employ.email}">has
+									overLapping tasks!</font></div>
+							</th:block>
+						</div>
+					</div>
+					
+				</div>
+
+			</div>
+		</div>
+	</div>
+</body>
+</html>

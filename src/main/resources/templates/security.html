@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: head">
+
+<title>Security</title>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">Security</h2>
+	
+	<div class="content">
+		<div class="row">
+			<div class="column">
+				<form action="/updatePassword" method="POST">
+					<h4>Change Password</h4>
+					<table>
+						<tr>
+							<td>Current Password</td>
+							<td><input type="password" id="password" name="password"/></td>
+						</tr>
+						<tr>
+							<td>New Password</td>
+							<td><input type="password" id="newPass" name="newPass"/></td>
+						</tr>
+						<tr>
+							<td>Confirm Password</td>
+							<td><input type="password" id="confirmPass" name="confirmPass"/></td>
+						</tr>
+					</table>
+					<input type="hidden" th:field="${employee.id}" id="id" name="id" />
+					<button type="submit" value="Update">Update</button>
+				</form>
+				<p><font color="red" th:text="${error}"></font></p>
+				<p>You will be redirected to the login page if updating your password was successful.</p>
+				From there you may log back in with your new password.
+			</div>
+			
+			<div class="column">
+				
+			</div>
+		</div>
+		<div class="row">
+
+		</div>
+	</div>
+	
+</body>
+</html>

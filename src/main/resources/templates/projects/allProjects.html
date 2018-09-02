@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>All Projects</title>
+</head>
+<body>
+
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">All Projects</h2>
+	
+	<script type="text/javascript">
+		function clickfunc() {
+			if(confirm("Are you sure you want to delete this project?\nThis will remove all tasks within this project also.\nThis cannot be undone.")) {
+			    return true;
+			} else {
+			    return false;
+			}
+		}
+	</script>
+
+	<div class="content">
+		<th:block th:each="project : ${projects}">
+			<h4>
+				<label th:text="${project.name}"></label>
+			</h4>
+			<div style="border-bottom: 1px solid red;" th:if="${session.employee.manager}">
+				<div class="row">
+					<div class="column" align="left">
+						<a id="links" th:href="@{'/viewProject/{id}'(id=${project.id})}">View
+							project</a>
+					</div>
+					<div class="column" align="right">
+						<a id="links" th:href="@{'/deleteProject/{id}'(id=${project.id})}" onclick="return clickfunc()">Delete
+							project</a>
+					</div>
+				</div>
+			</div>
+			<div style="border-bottom: 1px solid red;" th:if="${not session.employee.manager}">
+				<div class="row">
+					<div class="column" align="left">
+						<a id="links" th:href="@{'/viewProject/{id}'(id=${project.id})}">View
+							project</a>
+					</div>
+				</div>
+			</div>
+		</th:block>
+	</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Register</title>
+<link rel="stylesheet" href="layout2.css">
+<style>
+div {
+    padding-top: 100px;
+}
+
+form.one {
+	border-style: solid;
+    border-color: black;
+    display: inline-block;
+    border: 3px solid #f1f1f1;
+    background-color: white;
+    border-radius: 6px;
+}
+
+</style>
+</head>
+<body>
+<div align="center" >
+	<form class="one" action="/registration" th:object="${employee}" method="POST">
+		<h1 th:text="Register">form</h1>
+		<table>
+			<tr>
+				<td>Name</td>
+			</tr>
+			<tr>
+				<td><input type ="text" th:field="*{name}" id = "name" name = "name" placeholder="Your name.."/></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+			</tr>
+			<tr>
+				<td><input type="email" th:field="*{email}" id = "email" name = "email" placeholder="example@example.com"/></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+			</tr>
+			<tr>
+				<td><input type="password" th:field="*{password}" id = "password" name = "password"/></td>
+			</tr>
+			<tr>
+				<td>Confirm Password</td>
+			</tr>
+			<tr>
+				<td><input type="password" th:field="*{confirm}" id = "confirm" name = "confirm"/></td>
+			</tr>
+			<tr>
+				<td>Registration Code</td>
+			</tr>
+			<tr>
+				<td><input type="password"  id = "code" name = "code"/></td>
+			</tr>
+	    </table>
+	    <p>
+	    	<button type="submit" th:text="Submit">submit</button>
+	    </p>
+	    <p>
+			<a href="/">Already have an account? Click here to login</a>
+		</p>
+	</form>
+		<p><font color="red" th:text="${error}"></font></p>
+	</div>
+</body>
+</html>

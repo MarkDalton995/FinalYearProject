@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Login</title>
+<link rel="stylesheet" href="layout2.css">
+<style>
+div {
+    padding-top: 100px;
+}
+
+form.one {
+	border-style: solid;
+    border-color: black;
+    display: inline-block;
+    border: 3px solid #f1f1f1;
+    background-color: white;
+    border-radius: 6px;
+}
+
+</style>
+</head>
+<body>
+<h2 align="center" style="padding-top: 40px;"> 
+		
+</h2>
+
+<div align="center">
+
+	
+
+	<form  class="one" method="POST" name="login_form" id="login_form" action="/login" role="form">
+	<img style="border-radius: 6px;" src="images/logo.png"></img>
+		<h1 th:text="Login">form</h1>
+		<table>
+			<tr>
+				<td>Email</td>
+			</tr>
+			<tr>
+				<td><input type="email" id = "email" name = "email" /></td>
+			</tr>
+			<tr>
+				<td>Password</td>
+			</tr>
+			<tr>
+				<td><input type="password" id = "password" name = "password"/></td>
+			</tr>
+		</table>
+		<p>
+			<button type="submit" id="submit" class="btn btn-primary">Login</button>
+		</p>
+		<p>
+			<a href="/register">Need to create an account? Click here</a>
+		</p>
+	</form>
+	        
+	<p><font color="red" th:text="${error}"></font></p>
+</div>
+</body>
+</html>

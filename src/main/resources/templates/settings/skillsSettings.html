@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments :: head">
+<title>Skills Settings</title>
+<style>
+</style>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white">Roles Settings</h2>
+
+	<div class="content">
+	
+		<div class="row">
+			<div class="column" align="left">
+				<h4>Select a role</h4>
+				<form action="/skillsSettingsSelection" method="POST">
+					<select name="skill" id="skill">
+						<th:block th:each="skill : ${skills}">
+							<option th:value="${skill.name}" th:text="${skill.name}">...</option>
+						</th:block>
+					</select> <br> <br> <input value="Choose" type="submit">
+				</form>
+
+				<div th:if="${#lists.size(skills) != 1}">
+					<h4>Delete selected role</h4>
+					<form action="/deleteSkill" method="POST">
+						<input type="hidden" th:field="${Skill.id}" id="deleteID"
+							name="deleteID" /> <input value="Delete" type="submit">
+					</form>
+				</div>
+			</div>
+
+			<div class="column" align="left">
+				<h4>Update: <label th:text="${Skill.name}"></label></h4>
+				
+				<form action="/updateSkill" th:object="${Skill}" method="POST">
+					<table>
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" th:field="${Skill.name}" id="name" name="name" /></td>
+						</tr>
+						<tr>
+							<td>Daily Rate:</td>
+							<td><input type="text" th:field="${Skill.dailyRate}" id="dailyRate" name="dailyRate" /></td>
+						</tr>
+					</table>
+					<input type="hidden" th:field="${Skill.id}" id="id" name="id" /> <input type="submit" value="Update">
+				</form>
+				<p><font color="red" th:text="${updateError}"></font></p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="column" align="left">
+				<h4>Create a role:</h4>
+				<form action="/createSkill" method="POST">
+					<table>
+					<tr>
+						<td>Name:</td>
+						<td><input type="text" id="name" name="name" /></td>
+					</tr>
+					<tr>
+						<td>Daily Rate:</td>
+						<td><input type="text" id="dailyRate" name="dailyRate" /></td>
+					</tr>
+					</table>
+					<input type="submit" value="Create">
+				</form>
+				<p><font color="red" th:text="${createError}"></font></p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Create Task</title>
+<link rel="stylesheet" href="../layout.css">
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+	
+	<h2 style="color: white">
+		New Task
+	</h2>
+
+	<div class="content">
+		<div class="row">
+			<div class="column" align="left">
+				<form action="/createTask" method="POST" role="form">
+					<table>
+						<tr>
+							<td>Task Name:</td>
+							<td><input id="name" name="name" /></td>
+						</tr>
+						<tr>
+							<td>Task Description:</td>
+							<td><textarea rows="4" cols="50" id="description" name="description"></textarea></td>
+						</tr>
+						<tr>
+							<td>Task Duration (Days):</td>
+							<td><input id="duration" name="duration" /></td>
+						</tr>
+						<tr>
+							<td>Start Date:</td>
+							<td><input type="date" id="minStartDate" name="minStartDate" /></td>
+						</tr>
+						<tr>
+							<td>Skill Required:</td>
+							<td>
+								<select name="skill" id="skill">
+									<th:block th:each="skill : ${skills}">
+										<option th:value="${skill.name}" th:text="${skill.name}">...</option>
+									</th:block>
+								</select>
+							</td>
+						</tr>
+					</table>
+					<input type="hidden" th:value="${projectID}" id="projectID" name="projectID" />
+					<button type="submit" value="Create">Create</button>
+				</form>
+		
+				<p><font color="red" th:text="${dateError}"></font></p>
+				<p><font color="red" th:text="${daysError}"></font></p>
+				
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>View Project</title>
+<link rel="stylesheet" href="../layout.css">
+<script type="text/javascript" src="../js/fusioncharts.js"></script>
+<script type="text/javascript"
+	src="../js/themes/fusioncharts.theme.fusion.js"></script>
+
+<style>
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 70%;
+}
+
+td, th {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #dddddd;
+}
+
+#myProgress {
+	width: 30%;
+	background-color: grey;
+}
+
+#myBar {
+	width: 0%;
+	height: 30px;
+	background-color: green;
+}
+</style>
+</head>
+<body>
+	<div data-th-if="${session.employee.manager}">
+		<div th:replace="fragments :: ManagerNavBar"></div>
+	</div>
+	<div data-th-if="${not session.employee.manager}">
+		<div th:replace="fragments :: EmployeeNavBar"></div>
+	</div>
+
+	<h2 style="color: white" th:text="${project.name}"></h2>
+
+	<div class="content">
+
+		<div class="row">
+
+
+
+			<h4>Progress</h4>
+			<div id="myProgress">
+				<div id="myBar" style="width: 0%"></div>
+			</div>
+
+			<script th:inline="javascript">
+				/*<![CDATA[*/	
+					var message = /*[[${progress}]]*/'default';
+					document.getElementById("myBar").style.width = message;
+				/*]]>*/
+			</script>
+
+			<h4>Project Details</h4>
+			<table>
+				<tr>
+					<td>Name:</td>
+					<td><label th:text="${project.name}"></label></td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td><label th:text="${project.description}"></label></td>
+				</tr>
+				<tr>
+					<td>Start Date:</td>
+					<td><label th:text="${project.startDate}"></label></td>
+				</tr>
+				<tr>
+					<td>Total Budget:</td>
+					<td><label th:text="${budgetTotal}"></label></td>
+				</tr>
+				<tr>
+					<td>Budget To Date:</td>
+					<td><label th:text="${budgetToDate}"></label></td>
+				</tr>
+				<tr th:if="${project.projectManager != null}">
+					<td>Project Manager:</td>
+					<td><label th:text="${project.projectManager.name}"></label></td>
+				</tr>
+				<tr th:if="${project.projectManager != null}">
+					<td>Project Manager Email:</td>
+					<td><label th:text="${project.projectManager.email}"></label></td>
+				</tr>
+				<tr th:if="${project.projectManager == null}">
+					<td>Select a Project Manager:</td>
+					<td th:if="${session.employee.manager}">
+						<form action="/assignProjectManager" method="POST">
+							<select name="pManager" id="pManager">
+								<th:block th:each="manager : ${managers}">
+									<option th:value="${manager.email}" th:text="${manager.email}">...</option>
+								</th:block>
+							</select><input type="hidden" th:field="${project.id}" id="id" name="id" />
+							<button type="submit">Assign PM</button>
+						</form>
+					</td>
+				</tr>
+			</table>
+			<div data-th-if="${session.employee.manager}">
+				<h4>Update Project</h4>
+				<a id="links" th:href="@{'/editProject/{id}'(id=${project.id})}">Update
+					Project</a>
+			</div>
+		</div>
+
+		<div class="row">
+			<script th:inline="javascript">
+				/*<![CDATA[*/
+					var ProjectTaskNames = /*[[${ProjectTaskNames}]]*/;
+					var ProjectTaskDates = /*[[${ProjectTaskDates}]]*/;
+					var ProjectTaskMonths = /*[[${ProjectTaskMonths}]]*/;
+				/*]]>*/
+			
+				const dataSource = {
+						  "chart": {
+						    "dateformat": "mm/dd/yyyy",
+						    "caption": "Project Chart",
+						    "theme": "fusion",
+						    "canvasborderalpha": "40",
+						    "ganttlinealpha": "50"
+						  },
+						  "tasks": {
+						    "color": "#58a367",
+						    "task": ProjectTaskDates
+						  },
+						  "processes": {
+						    "headertext": "Task",
+						    "headeralign": "left",
+						    "fontsize": "14",
+						    "isbold": "0",
+						    "align": "left",
+						    "process": ProjectTaskNames
+						  },
+						  "categories": [
+						    {
+						    	"category": ProjectTaskMonths
+						    }
+						  ]
+						};
+			
+						FusionCharts.ready(function() {
+						   var myChart = new FusionCharts({
+						      type: "gantt",
+						      renderAt: "chart-container",
+						      width: "100%",
+						      height: "50%",
+						      dataFormat: "json",
+						      dataSource
+						   }).render();
+						});
+			</script>
+			<div style="height: 50%;" id="chart-container">FusionChartsXT
+				will load here!</div>
+		</div>
+
+		<div class="row">
+
+			<div class="column" align="left">
+			
+				<div data-th-if="${session.employee.manager}">
+					<h4>Create New Task</h4>
+					<a id="links" th:href="@{'/newTask/{id}'(id=${project.id})}">Create
+						new task</a>
+				</div>
+
+				<h4>Make a comment</h4>
+				<form action="/createComment" method="POST">
+					<div>
+						<textarea rows="4" cols="50" id="comment" name="comment"></textarea>
+					</div>
+					<input type="hidden" th:field="${project.id}" id="id" name="id" />
+					<input type="submit" value="Post">
+				</form>
+
+				<div th:if="${comments != null}">
+					<th:block th:each="comment : ${comments}">
+						<div style="padding-top: 20px;">
+							<b><label style="color: #555;"
+								th:text="${comment.employee.name}"></label></b> : <label
+								th:text="${comment.dateTime}"></label>
+						</div>
+						<div style="border: 1px solid #555;">
+							<label style="padding-left: 10px;" th:text="${comment.comment}"></label>
+						</div>
+					</th:block>
+				</div>
+			</div>
+
+			<div class="column" align="left">
+				<h4>Project Tasks</h4>
+				<div th:if="${projectTasks != null}">
+					<table>
+						<th>Name</th>
+						<th>Duration</th>
+						<th>View</th>
+						<th>Assignee</th>
+						<th>Status</th>
+						<th:block th:each="task : ${projectTasks}">
+							<tr>
+								<td><label th:text="${task.name}"></label></td>
+								<td><label th:text="${task.duration}"></label> Days</td>
+								<td><a id="links"
+									th:href="@{'/viewTask/{id}'(id=${task.id})}">View Task</a></td>
+								<td th:if="${task.employee != null}"><label
+									th:text="${task.employee.email}"></label></td>
+								<td th:if="${task.employee == null}"><label
+									style="color: red;">Unassigned</label></td>
+								<td th:if="${task.completed}"><font style="color: green;">
+									Complete</font></td>
+								<td th:if="${not task.completed}"><font>Incomplete
+									</font></td>
+							</tr>
+						</th:block>
+					</table>
+				</div>
+			</div>
+
+
+		</div>
+
+	</div>
+
+
+</body>
+</html>
